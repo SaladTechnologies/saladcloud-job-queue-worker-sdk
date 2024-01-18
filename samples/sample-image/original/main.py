@@ -24,7 +24,7 @@ app = FastAPI(title="Mandelbrot")
 
 @app.get("/")
 def index():
-    return RedirectResponse('/docs')
+    return RedirectResponse("/docs")
 
 
 @app.post("/generate/")
@@ -42,7 +42,8 @@ def generate_image(req: Request):
     buffer = BytesIO()
     img.save(buffer, format="png")
     payload = buffer.getbuffer().tobytes()
-    if req.kind == 'png':
+    if req.kind == "png":
         return Response(content=payload, media_type="image/png")
     else:
-        return PlainTextResponse(content=base64.b64encode(payload))
+        result = base64.b64encode(payload).decode("utf-8")
+        return PlainTextResponse(content=f'"{result}"')
