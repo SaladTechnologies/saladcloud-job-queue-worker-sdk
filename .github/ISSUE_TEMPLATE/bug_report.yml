@@ -5,7 +5,7 @@ labels:
 body:
   - type: markdown
     attributes:
-      value: Thanks for taking the time to fill out this bug report! We encourage you to start with a [GitHub discussion](https://github.com/SaladTechnologies/saladcloud-job-queues-sdk/discussions) to ensure this issue is new. If this issue is security related, please disclose vulnerabilities to us responsibly as a [GitHub security advisory](https://github.com/SaladTechnologies/saladcloud-job-queues-sdk/security/advisories/new).
+      value: Thanks for taking the time to fill out this bug report! We encourage you to start with a [GitHub discussion](https://github.com/SaladTechnologies/saladcloud-job-queue-worker-sdk/discussions) to ensure this issue is new. If this issue is security related, please disclose vulnerabilities to us responsibly as a [GitHub security advisory](https://github.com/SaladTechnologies/saladcloud-job-queue-worker-sdk/security/advisories/new).
   - type: textarea
     id: actual
     attributes:
@@ -34,7 +34,7 @@ body:
   - type: textarea
     id: sdkVersion
     attributes:
-      label: What is the name and version of your SaladCloud Job Queues SDK?
-      description: e.g. job-queue-worker 1.0.1
+      label: What is the version of your SaladCloud Job Queue Worker SDK?
+      description: e.g. 1.0.1
     validations:
       required: true
