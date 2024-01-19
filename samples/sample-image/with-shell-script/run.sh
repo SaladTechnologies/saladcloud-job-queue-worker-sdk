@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Start the salad-queue-client
-/usr/local/bin/salad-queue-client &
+# Start the salad-job-queue-worker
+/usr/local/bin/salad-job-queue-worker &
 
 # Start the rest service
 uvicorn main:app --host '*' --port 80 &
