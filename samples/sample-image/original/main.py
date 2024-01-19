@@ -4,7 +4,7 @@ from typing import Literal
 
 import mandelbrot
 from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse, RedirectResponse, Response
+from fastapi.responses import JSONResponse, RedirectResponse, Response
 from pydantic import BaseModel
 
 
@@ -45,6 +45,5 @@ def generate_image(req: Request):
     if req.kind == "png":
         return Response(content=payload, media_type="image/png")
     else:
-        result = base64.b64encode(payload).decode("utf-8")
-        return PlainTextResponse(content=f'"{result}"')
+        return JSONResponse(content=base64.b64encode(payload).decode("utf-8"))
 

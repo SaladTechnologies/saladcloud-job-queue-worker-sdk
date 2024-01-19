@@ -1,4 +1,8 @@
+# syntax=docker/dockerfile:1
+
 FROM python:3.11-slim
+
+EXPOSE 80/tcp
 
 WORKDIR /app
 
