@@ -157,12 +157,12 @@ func (w *Worker) handleStream() {
 			logger.Warningln("nil message")
 			continue
 		}
-		switch v := resp.Message.(type) {
+		switch msg := resp.Message.(type) {
 		case *gen.AcceptJobsResponse_Heartbeat:
 			logger.Infoln("heartbeat")
 			continue
 		case *gen.AcceptJobsResponse_Job:
-			err := w.executeJob(v.Job)
+			err := w.executeJob(msg.Job)
 			if err != nil {
 				break
 			}
