@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"time"
 
@@ -151,19 +150,19 @@ func (w *Worker) handleStream() {
 			}
 		}
 		if resp == nil {
+			logger.Warningln("nil response")
 			continue
 		}
 		if resp.Message == nil {
-			log.Fatal(("message nil"))
-		}
-		_, ok := resp.Message.(*gen.AcceptJobsResponse_Heartbeat)
-		if ok {
-			logger.Infoln("heartbeat")
+			logger.Warningln("nil message")
 			continue
 		}
-		jobMsg, ok := resp.Message.(*gen.AcceptJobsResponse_Job)
-		if ok {
-			err := w.executeJob(jobMsg.Job)
+		switch v := resp.Message.(type) {
+		case *gen.AcceptJobsResponse_Heartbeat:
+			logger.Infoln("heartbeat")
+			continue
+		case *gen.AcceptJobsResponse_Job:
+			err := w.executeJob(v.Job)
 			if err != nil {
 				break
 			}
