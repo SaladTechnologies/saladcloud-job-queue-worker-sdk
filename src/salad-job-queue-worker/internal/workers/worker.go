@@ -150,8 +150,8 @@ func (w *Worker) handleStream() {
 			}
 		}
 		if resp == nil {
-			logger.Warningln("nil response")
-			continue
+			logger.Warningln("both resp and err are nils, looks like the stream has been terminated")
+			break
 		}
 		if resp.Message == nil {
 			logger.Warningln("nil message")
