@@ -24,6 +24,10 @@ import (
 
 // TODO, clean this up and simplify
 
+const (
+	jsonContentType = "application/json"
+)
+
 var (
 	logger = loggers.Logger
 )
@@ -73,26 +77,23 @@ func (w *Worker) Run() {
 func (w *Worker) executeJob(job *gen.Job) error {
 	logger.Infof("Executing job %s", job.JobId)
 	url := fmt.Sprintf("http://localhost:%d/%s", job.Port, job.Path)
-	payload := bytes.NewReader(job.Input)
-	req, err := http.NewRequest(http.MethodPost, url, payload)
+	resp, err := http.DefaultClient.Post(url, jsonContentType, bytes.NewReader(job.Input))
 	if err != nil {
 		logger.Errorln(err)
-		return err
-	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		logger.Errorln(err)
-		return err
+		return w.rejectJob(job)
 	}
 	defer resp.Body.Close()
 	output, err := io.ReadAll(resp.Body)
 	if err != nil {
 		logger.Errorln(err)
-		if err := w.rejectJob(job); err != nil {
-			return err
-		}
+		return w.rejectJob(job)
 	}
-	return w.completeJob(job, output)
+	err = w.completeJob(job, output)
+	if err != nil {
+		logger.Errorln(err)
+		return w.rejectJob(job)
+	}
+	return nil
 }
 
 func (w *Worker) completeJob(job *gen.Job, output []byte) error {
@@ -103,7 +104,7 @@ func (w *Worker) completeJob(job *gen.Job, output []byte) error {
 	req.Output = output
 	ctx, err := w.getAuthorizedContext()
 	if err != nil {
-		logger.Fatalln(err)
+		logger.Fatalln(err) // cannot grab the token, can't do anything
 	}
 	_, err = w.client.CompleteJob(ctx, &req)
 	if err != nil {
@@ -164,7 +165,8 @@ func (w *Worker) handleStream() {
 		case *gen.AcceptJobsResponse_Job:
 			err := w.executeJob(msg.Job)
 			if err != nil {
-				break
+				logger.Warningf("failed to execute the job, becaouse of [%s]", err)
+				continue
 			}
 		}
 	}
