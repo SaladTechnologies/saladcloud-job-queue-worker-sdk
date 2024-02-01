@@ -165,7 +165,7 @@ func (w *Worker) handleStream() {
 		case *gen.AcceptJobsResponse_Job:
 			err := w.executeJob(msg.Job)
 			if err != nil {
-				logger.Warningf("failed to execute the job, becaouse of [%s]", err)
+				logger.Warningf("failed to execute the job, because of [%s]", err)
 				continue
 			}
 		}
