@@ -45,7 +45,6 @@ type Worker struct {
 	conn    *grpc.ClientConn
 	client  gen.JobQueueWorkerServiceClient
 	stream  gen.JobQueueWorkerService_AcceptJobsClient
-	token   string // TODO associate with the job
 }
 
 func New(cfg *Config) *Worker {
@@ -250,9 +249,7 @@ func (w *Worker) processMemento() error {
 }
 
 func (w *Worker) fetchToken() (string, error) {
-	if w.token != "" {
-		return w.token, nil
-	}
+
 	url := fmt.Sprintf("%s/v1/token", w.cfg.MetadataURI)
 	logger.Debugf("Fetching token from %s", url)
 	req, err := http.NewRequest(http.MethodGet, url, http.NoBody)
@@ -277,8 +274,7 @@ func (w *Worker) fetchToken() (string, error) {
 		return "", err
 	}
 	logger.Tracef("token: %s", token.JWT)
-	w.token = token.JWT
-	return w.token, nil
+	return token.JWT, nil
 }
 
 func (w *Worker) getAuthorizedContext() (context.Context, error) {
