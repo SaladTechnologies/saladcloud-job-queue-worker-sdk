@@ -192,6 +192,10 @@ func (w *Worker) connectWithBackoff() error {
 	}
 	var req gen.AcceptJobsRequest
 
+	if w.memento.job != nil {
+		req.CurrentJobId = w.memento.job.JobId
+	}
+
 	// keep connecting ...
 	sleepMultiplier := 1
 	for {
