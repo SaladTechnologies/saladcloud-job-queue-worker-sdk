@@ -1,3 +1,4 @@
+import asyncio
 import base64
 from io import BytesIO
 from typing import Literal
@@ -17,6 +18,7 @@ class Request(BaseModel):
     im_min: float = -1.0
     im_max: float = 1.0
     kind: Literal["png", "base64"] = "png"
+    delay: int = 0
 
 
 app = FastAPI(title="Mandelbrot")
@@ -28,7 +30,9 @@ def index():
 
 
 @app.post("/generate/")
-def generate_image(req: Request):
+async def generate_image(req: Request):
+    if req.delay != 0:
+        await asyncio.sleep(req.delay)
     img = mandelbrot.generate(
         req.width,
         req.height,
@@ -46,4 +50,3 @@ def generate_image(req: Request):
         return Response(content=payload, media_type="image/png")
     else:
         return JSONResponse(content=base64.b64encode(payload).decode("utf-8"))
-
