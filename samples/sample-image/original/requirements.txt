@@ -11,7 +11,7 @@ kiwisolver==1.4.4
 matplotlib==3.7.2
 numpy==1.25.2
 packaging==23.1
-Pillow==10.0.1
+Pillow==10.3.0
 pydantic==2.1.1
 pydantic_core==2.4.0
 pyparsing==3.0.9
