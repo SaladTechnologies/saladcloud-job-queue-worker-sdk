@@ -33,7 +33,7 @@ var (
 )
 
 type Config struct {
-	LogLevel        string `env:"LOG_LEVEL" envDefault:"error"`
+	LogLevel        string `env:"QUEUE_WORKER_LOG_LEVEL" envDefault:"error"`
 	ServiceEndpoint string `env:"SERVICE_ENDPOINT" envDefault:"job-queue-worker-api.salad.com:443"`
 	MetadataURI     string `env:"SALAD_METADATA_URI" envDefault:"http://169.254.169.254:80"`
 	UseTLS          string `env:"USE_TLS" envDefault:"1"`
