@@ -33,7 +33,7 @@ var (
 )
 
 type Config struct {
-	LogLevel        string `env:"LOG_LEVEL" envDefault:"info"`
+	LogLevel        string `env:"LOG_LEVEL" envDefault:"error"`
 	ServiceEndpoint string `env:"SERVICE_ENDPOINT" envDefault:"job-queue-worker-api.salad.com:443"`
 	MetadataURI     string `env:"SALAD_METADATA_URI" envDefault:"http://169.254.169.254:80"`
 	UseTLS          string `env:"USE_TLS" envDefault:"1"`
@@ -159,7 +159,7 @@ func (w *Worker) handleStream() {
 		}
 		switch msg := resp.Message.(type) {
 		case *gen.AcceptJobsResponse_Heartbeat:
-			logger.Infoln("heartbeat")
+			logger.Debugln("heartbeat")
 			continue
 		case *gen.AcceptJobsResponse_Job:
 			err := w.executeJob(msg.Job)
