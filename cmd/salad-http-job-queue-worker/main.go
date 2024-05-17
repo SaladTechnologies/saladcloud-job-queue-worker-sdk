@@ -5,14 +5,13 @@ import (
 
 	"github.com/caarlos0/env/v10"
 	"github.com/joho/godotenv"
-	"salad.com/qworker/internal/loggers"
-	"salad.com/qworker/internal/workers"
+	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/internal/loggers"
+	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/internal/workers"
 )
 
 var logger = loggers.Logger
 
 func main() {
-
 	if _, err := os.Stat(".env"); err == nil {
 		_ = godotenv.Load()
 	}
@@ -21,6 +20,7 @@ func main() {
 	if err := env.Parse(&config); err != nil {
 		logger.Fatalln(err)
 	}
+
 	logger.Infof("starting with the config %+v", config)
 	client := workers.New(&config)
 	client.Run()

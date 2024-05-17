@@ -1,6 +1,6 @@
 package workers
 
-import "salad.com/qworker/pkg/gen"
+import "github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/pkg/gen"
 
 type memento struct {
 	job        *gen.Job

@@ -10,6 +10,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/internal/dtos"
+	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/internal/loggers"
+	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/pkg/gen"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -17,12 +20,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"salad.com/qworker/internal/dtos"
-	"salad.com/qworker/internal/loggers"
-	"salad.com/qworker/pkg/gen"
 )
-
-// TODO, clean this up and simplify
 
 const (
 	jsonContentType = "application/json"
@@ -60,6 +58,7 @@ func (w *Worker) Run() {
 		if err != nil {
 			logger.Fatalln(err)
 		}
+
 		err = w.processMemento()
 		if err != nil {
 			logger.Errorln(err)
@@ -68,7 +67,6 @@ func (w *Worker) Run() {
 		}
 
 		w.handleStream() // exits only if the stream is broken, gracefully or abruptly
-
 		w.conn.Close()
 	}
 }
@@ -82,16 +80,19 @@ func (w *Worker) executeJob(job *gen.Job) error {
 		return w.rejectJob(job)
 	}
 	defer resp.Body.Close()
+
 	output, err := io.ReadAll(resp.Body)
 	if err != nil {
 		logger.Errorln(err)
 		return w.rejectJob(job)
 	}
+
 	err = w.completeJob(job, output)
 	if err != nil {
 		logger.Errorln(err)
 		return w.rejectJob(job)
 	}
+
 	return nil
 }
 
@@ -105,11 +106,13 @@ func (w *Worker) completeJob(job *gen.Job, output []byte) error {
 	if err != nil {
 		logger.Fatalln(err) // cannot grab the token, can't do anything
 	}
+
 	_, err = w.client.CompleteJob(ctx, &req)
 	if err != nil {
 		logger.Errorln(err)
 		return err
 	}
+
 	w.memento.clear()
 	return nil
 }
@@ -123,11 +126,13 @@ func (w *Worker) rejectJob(job *gen.Job) error {
 	if err != nil {
 		logger.Fatalln(err)
 	}
+
 	_, err = w.client.RejectJob(ctx, &req)
 	if err != nil {
 		logger.Errorln(err)
 		return err
 	}
+
 	w.memento.clear()
 	return nil
 }
@@ -139,6 +144,7 @@ func (w *Worker) handleStream() {
 			logger.Warningln("end of server stream")
 			break
 		}
+
 		if err != nil {
 			st, ok := status.FromError(err)
 			if !ok {
@@ -149,14 +155,17 @@ func (w *Worker) handleStream() {
 				break
 			}
 		}
+
 		if resp == nil {
 			logger.Warningln("both resp and err are nils, looks like the stream has been terminated")
 			break
 		}
+
 		if resp.Message == nil {
 			logger.Warningln("nil message")
 			continue
 		}
+
 		switch msg := resp.Message.(type) {
 		case *gen.AcceptJobsResponse_Heartbeat:
 			logger.Debugln("heartbeat")
@@ -190,8 +199,8 @@ func (w *Worker) connectWithBackoff() error {
 	} else {
 		creds = credentials.NewTLS(&tlsConfig)
 	}
-	var req gen.AcceptJobsRequest
 
+	var req gen.AcceptJobsRequest
 	if w.memento.job != nil {
 		req.CurrentJobId = w.memento.job.JobId
 	}
@@ -205,6 +214,7 @@ func (w *Worker) connectWithBackoff() error {
 			if !ok {
 				return err
 			}
+
 			if st.Code() == codes.Unavailable {
 				logger.Infof("can't connect, retrying in %d second(s)", sleepMultiplier)
 				time.Sleep(time.Second * time.Duration(sleepMultiplier))
@@ -212,9 +222,9 @@ func (w *Worker) connectWithBackoff() error {
 				continue
 			}
 		}
+
 		w.conn = conn
 		w.client = gen.NewJobQueueWorkerServiceClient(conn)
-
 		ctx, err := w.getAuthorizedContext()
 		if err != nil {
 			logger.Fatalln(err)
@@ -227,6 +237,7 @@ func (w *Worker) connectWithBackoff() error {
 			if !ok {
 				return err
 			}
+
 			if st.Code() == codes.Unavailable {
 				logger.Warnf("can't connect, retrying in %d second(s)", sleepMultiplier)
 				w.conn.Close()
@@ -237,6 +248,7 @@ func (w *Worker) connectWithBackoff() error {
 				continue
 			}
 		}
+
 		w.stream = stream
 		return nil
 	}
@@ -246,28 +258,32 @@ func (w *Worker) processMemento() error {
 	if w.memento.job == nil {
 		return nil
 	}
+
 	if w.memento.completion {
 		return w.completeJob(w.memento.job, w.memento.output)
 	}
+
 	return w.rejectJob(w.memento.job)
 }
 
 func (w *Worker) fetchToken() (string, error) {
-
 	url := fmt.Sprintf("%s/v1/token", w.cfg.MetadataURI)
 	logger.Debugf("Fetching token from %s", url)
 	req, err := http.NewRequest(http.MethodGet, url, http.NoBody)
 	if err != nil {
 		return "", err
 	}
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
+
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("unexpected staus code: %d", resp.StatusCode)
 	}
 	defer resp.Body.Close()
+
 	payload, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
@@ -277,6 +293,7 @@ func (w *Worker) fetchToken() (string, error) {
 	if err = json.Unmarshal(payload, &token); err != nil {
 		return "", err
 	}
+
 	logger.Tracef("token: %s", token.JWT)
 	return token.JWT, nil
 }

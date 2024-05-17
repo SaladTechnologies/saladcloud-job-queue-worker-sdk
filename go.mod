@@ -1,4 +1,4 @@
-module salad.com/qworker
+module github.com/saladtechnologies/saladcloud-job-queue-worker-sdk
 
 go 1.22.3
 

@@ -16,7 +16,6 @@ func init() {
 	logrus.SetReportCaller(true)
 	logrus.SetFormatter(&logrus.TextFormatter{
 		CallerPrettyfier: func(frame *runtime.Frame) (function string, file string) {
-
 			location := fmt.Sprintf("[%s:%d]", path.Base(frame.File), frame.Line)
 			return "", location
 		},
