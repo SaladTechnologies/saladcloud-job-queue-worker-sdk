@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-retryablehttp"
-	metadata_api "github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/internal/apis/metadata"
-	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/pkg/log"
+	metadata_api "github.com/saladtechnologies/salad-cloud-job-queue-worker/internal/apis/metadata"
+	"github.com/saladtechnologies/salad-cloud-job-queue-worker/pkg/log"
 )
 
 // Creates a SaladCloud Instance Metadata Service (IMDS) client.

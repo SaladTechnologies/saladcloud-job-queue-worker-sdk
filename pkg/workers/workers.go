@@ -3,9 +3,9 @@ package workers
 import (
 	"context"
 
-	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/internal/workers"
-	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/pkg/config"
-	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/pkg/jobs"
+	"github.com/saladtechnologies/salad-cloud-job-queue-worker/internal/workers"
+	"github.com/saladtechnologies/salad-cloud-job-queue-worker/pkg/config"
+	"github.com/saladtechnologies/salad-cloud-job-queue-worker/pkg/jobs"
 )
 
 // Represents a worker bound to a SaladCloud job queue.

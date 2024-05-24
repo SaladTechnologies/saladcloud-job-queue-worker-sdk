@@ -6,21 +6,21 @@ The following sections outline the different ways to contribute to the project.
 
 ## Discussing
 
-The easiest way to contribute to the project is by participating in [GitHub discussions](https://github.com/SaladTechnologies/saladcloud-job-queue-worker-sdk/discussions). The community often chimes in with helpful advice when you have a question, and you may also find yourself providing answers and helping others. Be sure to review the [code of conduct](./CODE_OF_CONDUCT.md) before participating.
+The easiest way to contribute to the project is by participating in [GitHub discussions](https://github.com/SaladTechnologies/salad-cloud-job-queue-worker/discussions). The community often chimes in with helpful advice when you have a question, and you may also find yourself providing answers and helping others. Be sure to review the [code of conduct](./CODE_OF_CONDUCT.md) before participating.
 
 _Please do not use GitHub issues to ask a question._ We will politely close a GitHub issue that asks a question and kindly refer you to one of the aforementioned avenues.
 
 ## Reporting Bugs
 
-We're sorry if this happened to you! Consider jumping into [GitHub discussions](https://github.com/SaladTechnologies/saladcloud-job-queue-worker-sdk/discussions) first. The community may have already found a solution.
+We're sorry if this happened to you! Consider jumping into [GitHub discussions](https://github.com/SaladTechnologies/salad-cloud-job-queue-worker/discussions) first. The community may have already found a solution.
 
-You can create a [GitHub issue](https://github.com/SaladTechnologies/saladcloud-job-queue-worker-sdk/issues) to report bugs. You can also create an [official support request](mailto:cloud@salad.com) if you have a specific question that should be answered by a team member.
+You can create a [GitHub issue](https://github.com/SaladTechnologies/salad-cloud-job-queue-worker/issues) to report bugs. You can also create an [official support request](mailto:cloud@salad.com) if you have a specific question that should be answered by a team member.
 
 ## Requesting Features
 
-We love a good idea. Do you have one? Consider jumping into [GitHub discussions](https://github.com/SaladTechnologies/saladcloud-job-queue-worker-sdk/discussions) first. The community may have some interesting insights.
+We love a good idea. Do you have one? Consider jumping into [GitHub discussions](https://github.com/SaladTechnologies/salad-cloud-job-queue-worker/discussions) first. The community may have some interesting insights.
 
-You can create a [GitHub issue](https://github.com/SaladTechnologies/saladcloud-job-queue-worker-sdk/issues) to request new features.
+You can create a [GitHub issue](https://github.com/SaladTechnologies/salad-cloud-job-queue-worker/issues) to request new features.
 
 ## Reporting Security Vulnerabilities
 

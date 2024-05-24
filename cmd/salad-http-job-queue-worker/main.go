@@ -11,10 +11,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/pkg/config"
-	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/pkg/jobs"
-	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/pkg/log"
-	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/pkg/workers"
+	"github.com/saladtechnologies/salad-cloud-job-queue-worker/pkg/config"
+	"github.com/saladtechnologies/salad-cloud-job-queue-worker/pkg/jobs"
+	"github.com/saladtechnologies/salad-cloud-job-queue-worker/pkg/log"
+	"github.com/saladtechnologies/salad-cloud-job-queue-worker/pkg/workers"
 )
 
 func main() {

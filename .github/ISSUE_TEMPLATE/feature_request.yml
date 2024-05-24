@@ -5,7 +5,7 @@ labels:
 body:
   - type: markdown
     attributes:
-      value: Thanks for taking the time to fill out this feature request! We encourage you to start with a [GitHub discussion](https://github.com/SaladTechnologies/saladcloud-job-queue-worker-sdk/discussions) to ensure this issue fits in the roadmap. If this issue is security related, please disclose vulnerabilities to us responsibly as a [GitHub security advisory](https://github.com/SaladTechnologies/saladcloud-job-queue-worker-sdk/security/advisories/new).
+      value: Thanks for taking the time to fill out this feature request! We encourage you to start with a [GitHub discussion](https://github.com/SaladTechnologies/salad-cloud-job-queue-worker/discussions) to ensure this issue fits in the roadmap. If this issue is security related, please disclose vulnerabilities to us responsibly as a [GitHub security advisory](https://github.com/SaladTechnologies/salad-cloud-job-queue-worker/security/advisories/new).
   - type: textarea
     id: feature
     attributes:

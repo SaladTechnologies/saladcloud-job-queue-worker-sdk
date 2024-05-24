@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"fmt"
 
-	"github.com/saladtechnologies/saladcloud-job-queue-worker-sdk/pkg/log"
+	"github.com/saladtechnologies/salad-cloud-job-queue-worker/pkg/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials"
