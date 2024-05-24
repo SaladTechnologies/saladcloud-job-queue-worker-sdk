@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package salad.grpc.saladcloud_job_queue_worker.v1alpha;
+
+import "google/protobuf/empty.proto";
+
+// A service used by the worker to accept jobs and produce results.
+service JobQueueWorkerService {
+    // Starts a long-running stream to accept jobs. At any given time, the worker should have at most one stream open
+    // and will receive at most one job at a time. The service will wait until the worker has either completed or
+    // rejected a job before sending the next one. The worker is considered available to accept jobs as long as the
+    // stream is open.
+    rpc AcceptJobs(AcceptJobsRequest) returns (stream AcceptJobsResponse);
+
+    // Completes a job.
+    rpc CompleteJob(CompleteJobRequest) returns (google.protobuf.Empty);
+
+    // Rejects a job.
+    rpc RejectJob(RejectJobRequest) returns (google.protobuf.Empty);
+}
+
+// Represents a request to the `AcceptJobs` method.
+message AcceptJobsRequest {
+    // The ID of the currently running job. Optional.
+    string current_job_id = 1;
+}
+
+// Represents a response from the `AcceptJobs` method.
+message AcceptJobsResponse {
+    // The stream message.
+    oneof message {
+        // The heartbeat is sent to keep the stream open. The worker should ignore this message.
+        google.protobuf.Empty heartbeat = 1;
+
+        // The next job to be processed. The worker should process this job and ultimately call either the `CompleteJob`
+        // or `RejectJob` method.
+        Job job = 2;
+    }
+}
+
+// Represents a job.
+message Job {
+    // The ID of the job.
+    string job_id = 1;
+
+    // The port number of the HTTP server.
+    int32 port = 2;
+
+    // The HTTP request path.
+    string path = 3;
+
+    // The HTTP request body.
+    bytes input = 4;
+}
+
+// Represents a request to the `CompleteJob` method.
+message CompleteJobRequest {
+    // The ID of the job.
+    string job_id = 1;
+
+    // The HTTP response body.
+    bytes output = 2;
+}
+
+// Represents a request to the `RejectJob` method.
+message RejectJobRequest {
+    // The ID of the job.
+    string job_id = 1;
+}

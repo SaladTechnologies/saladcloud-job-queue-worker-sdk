@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM foobar
+FROM mandelbrot:latest
 
 WORKDIR /app
 
@@ -12,16 +12,14 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-RUN \
-  tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
-  rm -rf /tmp/s6-overlay-noarch.tar.xz
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
+    rm -rf /tmp/s6-overlay-noarch.tar.xz
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
-RUN \
-  tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz && \
-  rm -rf /tmp/s6-overlay-x86_64.tar.xz
-COPY --chmod=755 s6 /etc/
+RUN tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz && \
+    rm -rf /tmp/s6-overlay-x86_64.tar.xz
 
-COPY --chmod=755 ./salad-job-queue-worker /usr/local/bin/
+COPY --chmod=755 ./s6 /etc/
+COPY --chmod=755 ./salad-http-job-queue-worker /usr/local/bin/
 
 ENTRYPOINT ["/init"]
-CMD ["/usr/local/bin/salad-job-queue-worker"]
+CMD ["/usr/local/bin/salad-http-job-queue-worker"]

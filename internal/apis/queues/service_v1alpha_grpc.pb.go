@@ -4,7 +4,7 @@
 // - protoc             v4.25.1
 // source: service_v1alpha.proto
 
-package gen
+package queues
 
 import (
 	context "context"
