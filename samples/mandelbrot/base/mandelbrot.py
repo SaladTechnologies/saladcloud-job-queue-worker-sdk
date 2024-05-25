@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 
 
-def generate(w, h, iter, re_min, re_max, im_min, im_max, kind):
+def generate(w, h, iter, re_min, re_max, im_min, im_max):
     x = np.linspace(re_min, re_max, num=w).reshape((1, w))
     y = np.linspace(im_min, im_max, num=h).reshape((h, 1))
     c = np.tile(x, (h, 1)) + 1j * np.tile(y, (1, w))

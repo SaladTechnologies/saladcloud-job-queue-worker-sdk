@@ -1,15 +1,27 @@
 import asyncio
 import base64
-from io import BytesIO
-from typing import Literal
-
+import logging
 import mandelbrot
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse, RedirectResponse, Response
+import uvicorn
+from fastapi import FastAPI, status
+from fastapi.responses import RedirectResponse
+from io import BytesIO
 from pydantic import BaseModel
 
 
-class Request(BaseModel):
+class EndpointFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        return record.args and len(record.args) >= 3 and record.args[2] != "/health"
+
+
+# Filter out noisy health check logs
+logging.getLogger("uvicorn.access").addFilter(EndpointFilter())
+
+class HealthResponse(BaseModel):
+    status: str = "OK"
+
+
+class GenerateImageRequest(BaseModel):
     width: int = 640
     height: int = 480
     iterations: int = 100
@@ -17,8 +29,11 @@ class Request(BaseModel):
     re_max: float = 1.0
     im_min: float = -1.0
     im_max: float = 1.0
-    kind: Literal["png", "base64"] = "png"
     delay: int = 0
+
+
+class GenerateImageResponse(BaseModel):
+    image: str
 
 
 app = FastAPI(title="Mandelbrot")
@@ -29,8 +44,14 @@ def index():
     return RedirectResponse("/docs")
 
 
-@app.post("/generate/")
-async def generate_image(req: Request):
+@app.post(
+        "/generate",
+        tags=["mandelbrot"],
+        summary="Generate an image of a Mandelbrot set",
+        response_description="Returns HTTP status 200 OK with the generated image",
+        status_code=status.HTTP_200_OK,
+        response_model=GenerateImageResponse)
+async def generate_image(req: GenerateImageRequest):
     if req.delay != 0:
         await asyncio.sleep(req.delay)
     img = mandelbrot.generate(
@@ -41,12 +62,18 @@ async def generate_image(req: Request):
         req.re_max,
         req.im_min,
         req.im_max,
-        req.kind,
     )
-    buffer = BytesIO()
-    img.save(buffer, format="png")
-    payload = buffer.getbuffer().tobytes()
-    if req.kind == "png":
-        return Response(content=payload, media_type="image/png")
-    else:
-        return JSONResponse(content=base64.b64encode(payload).decode("utf-8"))
+    buffered = BytesIO()
+    img.save(buffered, format="png")
+    return GenerateImageResponse(image=base64.b64encode(buffered.getvalue()).decode("utf-8"))
+
+
+@app.get(
+        "/health",
+        tags=["healthcheck"],
+        summary="Perform a Health Check",
+        response_description="Returns HTTP status 200 OK",
+        status_code=status.HTTP_200_OK,
+        response_model=HealthResponse)
+def get_health():
+    return HealthResponse(status="OK")
