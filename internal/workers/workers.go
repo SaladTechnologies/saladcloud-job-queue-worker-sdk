@@ -366,6 +366,7 @@ func (p *jobPoller) poll(ctx context.Context) error {
 			case codes.NotFound:
 				return jobNotFound
 			case codes.OK:
+			ReceiveLoop:
 				for {
 					resp, err := stream.Recv()
 					if err == nil {
@@ -384,23 +385,27 @@ func (p *jobPoller) poll(ctx context.Context) error {
 						}
 					} else if err == io.EOF {
 						logger.Info("job stream closed")
-						break
+						break ReceiveLoop
 					} else {
 						stat, ok := status.FromError(err)
 						if !ok {
 							logger.Error("failed to receive job", "error", err)
-							break
+							break ReceiveLoop
 						}
 
 						switch stat.Code() {
 						case codes.Canceled:
 							return ctx.Err()
+						case codes.Internal:
+							break ReceiveLoop
 						case codes.NotFound:
 							return jobNotFound
 						case codes.PermissionDenied:
 							reauth = true
+							break ReceiveLoop
 						case codes.Unauthenticated:
 							reauth = true
+							break ReceiveLoop
 						default:
 							logger.Error("failed to receive job", "error", err)
 							delay := time.NewTimer(2 * time.Minute)
@@ -411,12 +416,6 @@ func (p *jobPoller) poll(ctx context.Context) error {
 							case <-delay.C:
 								continue
 							}
-						}
-
-						if reauth {
-							break
-						} else {
-							bo.Reset()
 						}
 					}
 				}
