@@ -23,6 +23,7 @@ import (
 
 var workloadInstanceNotFound = errors.New("workload instance not found")
 var jobNotFound = errors.New("job not found")
+var outputInvalid = errors.New("job output invalid")
 
 func Run(ctx context.Context, config config.Config, executor jobs.HTTPJobExecutor) error {
 	logger := log.FromContext(ctx)
@@ -491,6 +492,10 @@ func (h *jobHandler) execute(ctx context.Context) error {
 		err = h.reject(ctx)
 	} else {
 		err = h.complete(ctx, responseBody)
+		if errors.Is(err, outputInvalid) {
+			logger.Warn("invalid job output", "jobId", h.job.JobId)
+			err = h.reject(ctx)
+		}
 	}
 
 	h.d <- struct{}{}
@@ -565,6 +570,8 @@ func (h *jobHandler) complete(ctx context.Context, responseBody []byte) error {
 			switch stat.Code() {
 			case codes.Canceled:
 				return ctx.Err()
+			case codes.InvalidArgument:
+				return outputInvalid
 			case codes.NotFound:
 				logger.Info("job not found", "jobId", h.job.JobId)
 				return nil
