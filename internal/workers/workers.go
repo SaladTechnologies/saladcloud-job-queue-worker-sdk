@@ -71,11 +71,11 @@ func Run(ctx context.Context, config config.Config, executor jobs.HTTPJobExecuto
 	AssignmentPhaseLoop:
 		for {
 			select {
-			case <-ctx.Done():
+			case <-workerCtx.Done():
 				if cancelJobPoller != nil {
 					cancelJobPoller()
 				}
-				return ctx.Err()
+				return workerCtx.Err()
 			case nextReady := <-readinessPoller.next():
 				if nextReady != ready {
 					ready = nextReady
@@ -135,11 +135,11 @@ func Run(ctx context.Context, config config.Config, executor jobs.HTTPJobExecuto
 	ExecutePhaseLoop:
 		for {
 			select {
-			case <-ctx.Done():
+			case <-workerCtx.Done():
 				if cancelJobPoller != nil {
 					cancelJobPoller()
 				}
-				return ctx.Err()
+				return workerCtx.Err()
 			case nextReady := <-readinessPoller.next():
 				if nextReady != ready {
 					ready = nextReady
