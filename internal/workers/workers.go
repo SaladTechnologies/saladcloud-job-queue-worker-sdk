@@ -92,6 +92,7 @@ func Run(ctx context.Context, config config.Config, executor jobs.HTTPJobExecuto
 									cancelWorker()
 								} else if errors.Is(err, jobNotFound) {
 									// TODO: Handle job not found.
+									logger.Warn("job not found")
 								} else {
 									panic("an unexpected error occurred")
 								}
@@ -155,6 +156,7 @@ func Run(ctx context.Context, config config.Config, executor jobs.HTTPJobExecuto
 									cancelWorker()
 								} else if errors.Is(err, jobNotFound) {
 									// TODO: Handle job not found.
+									logger.Warn("job not found")
 								} else {
 									panic("an unexpected error occurred")
 								}
