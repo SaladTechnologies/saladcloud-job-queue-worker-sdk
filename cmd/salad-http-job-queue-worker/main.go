@@ -51,8 +51,8 @@ func main() {
 		cancel()
 	}()
 
-	logger.Info("starting SaladCloud Job Queue worker...")
 	w := workers.NewWorker(c, executeJob)
+	logger.Info("starting SaladCloud Job Queue worker...", "version", w.Version)
 	err = w.Run(log.WithLogger(ctx, logger))
 	if err != nil && !errors.Is(err, context.Canceled) {
 		defaultLogger.Error("failed to run SaladCloud Job Queue worker", "err", err)
