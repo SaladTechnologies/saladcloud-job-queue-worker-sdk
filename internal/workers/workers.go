@@ -409,6 +409,8 @@ func (p *jobPoller) poll(ctx context.Context) error {
 						case codes.Unauthenticated:
 							reauth = true
 							break ReceiveLoop
+						case codes.Unknown:
+							break ReceiveLoop
 						default:
 							logger.Error("failed to receive job", "error", err)
 							delay := time.NewTimer(2 * time.Minute)
