@@ -4,7 +4,7 @@ FROM mandelbrot:latest
 
 WORKDIR /app
 
-ARG SALAD_JOB_QUEUE_WORKER_VERSION=0.1.0
+ARG SALAD_JOB_QUEUE_WORKER_VERSION=0.2.0
 RUN apt-get update && \
     apt-get -y install curl && \
     apt-get clean && \
