@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"log/slog"
@@ -18,7 +19,19 @@ import (
 	"github.com/saladtechnologies/salad-cloud-job-queue-worker/pkg/workers"
 )
 
+var VerFlag bool
+
+func init() {
+	flag.BoolVar(&VerFlag, "version", false, "Show version info")
+}
+
 func main() {
+	flag.Parse()
+	if VerFlag {
+		fmt.Printf("Version: %s\n", workers.VersionStr())
+		os.Exit(0)
+	}
+
 	defaultLogger := slog.Default()
 	c, err := config.NewConfigFromEnv()
 	if err != nil {
