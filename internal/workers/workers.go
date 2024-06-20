@@ -399,8 +399,6 @@ func (p *jobPoller) poll(ctx context.Context) error {
 						switch stat.Code() {
 						case codes.Canceled:
 							return ctx.Err()
-						case codes.Internal:
-							break ReceiveLoop
 						case codes.NotFound:
 							return jobNotFound
 						case codes.PermissionDenied:
@@ -409,18 +407,9 @@ func (p *jobPoller) poll(ctx context.Context) error {
 						case codes.Unauthenticated:
 							reauth = true
 							break ReceiveLoop
-						case codes.Unknown:
-							break ReceiveLoop
 						default:
 							logger.Error("failed to receive job", "error", err)
-							delay := time.NewTimer(2 * time.Minute)
-							select {
-							case <-ctx.Done():
-								delay.Stop()
-								return ctx.Err()
-							case <-delay.C:
-								continue
-							}
+							break ReceiveLoop
 						}
 					}
 				}
