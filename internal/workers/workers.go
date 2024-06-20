@@ -573,6 +573,8 @@ func (h *jobHandler) complete(ctx context.Context, responseBody []byte) error {
 				return nil
 			case codes.PermissionDenied:
 				reauth = true
+			case codes.ResourceExhausted:
+				return outputInvalid
 			case codes.Unauthenticated:
 				reauth = true
 			default:
