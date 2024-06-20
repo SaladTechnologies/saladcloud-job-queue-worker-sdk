@@ -25,7 +25,7 @@ var workloadInstanceNotFound = errors.New("workload instance not found")
 var jobNotFound = errors.New("job not found")
 var outputInvalid = errors.New("job output invalid")
 
-func Run(ctx context.Context, config config.Config, executor jobs.HTTPJobExecutor) error {
+func Run(ctx context.Context, config config.Config, executor jobs.HTTPJobExecutor, version string) error {
 	logger := log.FromContext(ctx)
 	workerCtx, cancelWorker := context.WithCancel(ctx)
 	defer cancelWorker()
@@ -35,7 +35,7 @@ func Run(ctx context.Context, config config.Config, executor jobs.HTTPJobExecuto
 		return err
 	}
 
-	conn, err := newQueueConnection(workerCtx, config.ServiceEndpoint, config.ServiceUseTLS)
+	conn, err := newQueueConnection(workerCtx, config.ServiceEndpoint, config.ServiceUseTLS, version)
 	if err != nil {
 		return err
 	}

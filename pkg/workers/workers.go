@@ -32,5 +32,5 @@ func NewWorker(config config.Config, executor jobs.HTTPJobExecutor) *Worker {
 
 // Runs the worker until the given context is cancelled.
 func (w *Worker) Run(ctx context.Context) error {
-	return workers.Run(ctx, w.config, w.executor)
+	return workers.Run(ctx, w.config, w.executor, w.Version)
 }

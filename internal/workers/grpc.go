@@ -14,9 +14,7 @@ import (
 )
 
 // Creates a connection to the SaladCloud Job Queues service.
-func newQueueConnection(ctx context.Context, addr string, useTLS bool) (*grpc.ClientConn, error) {
-	// TODO: Use git version.
-	var version = "0.0.0"
+func newQueueConnection(ctx context.Context, addr string, useTLS bool, version string) (*grpc.ClientConn, error) {
 	var userAgent = fmt.Sprintf("salad-cloud-job-queue-worker/%s grpc-go/%s", version, grpc.Version)
 	opts := []grpc.DialOption{grpc.WithUserAgent(userAgent)}
 	if useTLS {
