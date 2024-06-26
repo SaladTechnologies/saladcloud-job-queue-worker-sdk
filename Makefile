@@ -1,6 +1,7 @@
-VERSION := $(shell git describe --exact-match --tags HEAD)
+VERSION := $(shell git describe --exact-match --tags HEAD 2>/dev/null)
 ifeq ($(VERSION),)
-	VERSION := 'v0.0.0'
+	# Create a dev version: vX.Y.Z-dev
+	VERSION := $(addsuffix -dev,$(shell git describe --abbrev=0 --tags HEAD))
 endif
 VERSION_FLAGS := -X "github.com/saladtechnologies/salad-cloud-job-queue-worker/pkg/workers.Version=$(VERSION)"
 LDFLAGS := -ldflags='$(VERSION_FLAGS)'
